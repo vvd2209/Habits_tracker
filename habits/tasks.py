@@ -1,12 +1,28 @@
 from celery import shared_task
-from habits.services import telegram_check_updates, habit_scheduler
+import requests
+from django.conf import settings
+
+from config.settings import TELEGRAM_TOKEN, TELEGRAM_CHAT_ID
+from habits.models import Habit
+
+bot_token = TELEGRAM_TOKEN
+telegram_id = TELEGRAM_CHAT_ID
+get_id_url = f'https://api.telegram.org/bot{bot_token}/getUpdates'
+send_message_url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
 
 
-# Задача Celery
-@shared_task(name="check_habit_time")
-def check_habit_time():
+@shared_task
+def send_message_to_bot():
+    """ Функция отправки сообщения в телеграм-бот
+    chat_id: id чата
+    message: передаваемое сообщение
     """
-    Проверяет время выполнения привычек и отправляет уведомления пользователям через Telegram.
-    """
-    telegram_check_updates()  # Проверка обновлений от Telegram-бота и обновление данных пользователей
-    habit_scheduler()  # Планирование проверки времени выполнения привычек и отправка уведомлений
+    habit = Habit.objects.get()
+    requests.get(
+        url=f'https://api.telegram.org/bot{settings.TELEGRAM_TOKEN}/sendMessage',
+        params={
+            'chat_id': habit.user.telegram_id,
+            'text': f'Привет {habit.owner}! Время {habit.time}. Пора идти в {habit.place} и сделать {habit.action}. ' \
+                    f'Это займет {habit.duration} минут!'
+        }
+    )

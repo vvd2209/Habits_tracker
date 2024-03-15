@@ -174,9 +174,9 @@ CSRF_TRUSTED_ORIGINS = [
 CORS_ALLOW_ALL_ORIGINS = False
 
 CELERY_BEAT_SCHEDULE = {
-    'check_habit_time': {
-        'task': 'check_habit_time',
-        'schedule': timedelta(minutes=1)
+    'TelegramBot': {
+        'task': 'habits.tasks.send_message_to_bot',
+        'schedule': timedelta(minutes=1),
     },
 }
 
@@ -188,3 +188,4 @@ CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
+TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')

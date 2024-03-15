@@ -8,7 +8,7 @@ from habits.permissions import IsOwner
 
 class HabitListView(generics.ListAPIView):
     """
-    Сериализатор для получения списка привычек.
+    Контроллер для получения списка привычек.
     """
     queryset = Habit.objects.all()
     serializer_class = HabitSerializer
@@ -31,7 +31,7 @@ class HabitListView(generics.ListAPIView):
 
 class HabitDetailView(generics.RetrieveAPIView):
     """
-    Сериализатор для получения деталей привычки.
+    Контроллер для получения деталей привычки.
     """
     queryset = Habit.objects.all()
     serializer_class = HabitSerializer
@@ -40,7 +40,7 @@ class HabitDetailView(generics.RetrieveAPIView):
 
 class HabitCreateView(generics.CreateAPIView):
     """
-    Сериализатор для создания новой привычки.
+    Контроллер для создания новой привычки.
     """
     queryset = Habit.objects.all()
     serializer_class = HabitSerializer
@@ -54,7 +54,7 @@ class HabitCreateView(generics.CreateAPIView):
 
 class HabitUpdateView(generics.UpdateAPIView):
     """
-    Сериализатор для обновления информации о привычке.
+    Контроллер для обновления информации о привычке.
     """
     queryset = Habit.objects.all()
     serializer_class = HabitSerializer
@@ -63,7 +63,7 @@ class HabitUpdateView(generics.UpdateAPIView):
 
 class HabitDeleteView(generics.DestroyAPIView):
     """
-    Сериализатор для удаления привычки.
+    Контроллер для удаления привычки.
     """
     queryset = Habit.objects.all()
     serializer_class = HabitSerializer
@@ -72,7 +72,7 @@ class HabitDeleteView(generics.DestroyAPIView):
 
 class ShareHabitListView(generics.ListAPIView):
     """
-    Сериализатор для получения списка общедоступных привычек.
+    Контроллер для получения списка общедоступных привычек.
     """
     queryset = Habit.objects.all()
     serializer_class = HabitSerializer
