@@ -17,12 +17,14 @@ def send_message_to_bot():
     chat_id: id чата
     message: передаваемое сообщение
     """
-    habit = Habit.objects.get()
-    requests.get(
-        url=f'https://api.telegram.org/bot{settings.TELEGRAM_TOKEN}/sendMessage',
-        params={
-            'chat_id': habit.user.telegram_id,
-            'text': f'Привет {habit.owner}! Время {habit.time}. Пора идти в {habit.place} и сделать {habit.action}. ' \
-                    f'Это займет {habit.duration} минут!'
-        }
-    )
+    habits = Habit.objects.get()
+    for habit in habits:
+        if habit.owner.chat_id:
+            requests.post(
+                url=f'https://api.telegram.org/bot{settings.TELEGRAM_TOKEN}/sendMessage',
+                params={
+                    'chat_id': habit.owner.chat_id,
+                    'text': f'Привет {habit.owner}! Время {habit.time}. Пора идти в {habit.place} и сделать '
+                            f'{habit.action}. Это займет {habit.duration} минут!'
+                    }
+            )
