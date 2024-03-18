@@ -175,7 +175,7 @@ CORS_ALLOW_ALL_ORIGINS = False
 
 CELERY_BEAT_SCHEDULE = {
     'TelegramBot': {
-        'task': 'habits.tasks.send_message_to_bot',
+        'task': 'habits.tasks.check_habit_time',
         'schedule': timedelta(minutes=1),
     },
 }
