@@ -36,7 +36,7 @@ class HabitTestCase(TestCase):
             "award": "Попить витаминный смузи",
             "duration": 30,
             "is_public": True,
-            "owner": 1
+            "owner": self.user.pk
         }
 
         response = self.client.post("/drf/habit/create/", data)
@@ -204,3 +204,84 @@ class HabitTestCase(TestCase):
 
         response = self.client.post("/drf/habit/create/", data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_delete_habit(self):
+        """ Тест на удаления привычки """
+
+        data = {
+            "place": "В спортзале",
+            "time": "14:00:00",
+            "action": "Пробежать 5 км",
+            "is_pleasant": False,
+            "frequency": "SUNDAY",
+            "award": "Попить витаминный смузи",
+            "duration": 30,
+            "is_public": True,
+            "owner": self.user.pk
+        }
+
+        self.client.post("/drf/habit/create/", data)
+        habit_pk = Habit.objects.first().pk
+
+        response = self.client.delete(f"/drf/habit/delete/{habit_pk}/")
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_validate_linked_create_habit(self):
+        """ Тест на добавление связанной привычки с признаком is_pleasant = False """
+        data_1 = Habit.objects.create(
+            place="В парке",
+            time="17:00:00",
+            action="Пробежать 5 км",
+            is_pleasant=False,
+            frequency="SUNDAY",
+            award="Попить витаминный смузи",
+            duration=1,
+            is_public=True,
+            owner=self.user
+        )
+
+        data_2 = {
+            "place": "В спортзале",
+            "time": "14:00:00",
+            "action": "Пробежать 5 км",
+            "link_pleasant": data_1.pk,
+            "is_pleasant": False,
+            "frequency": "SUNDAY",
+            "duration": 1,
+            "is_public": True,
+            "user": self.user.pk
+        }
+        response = self.client.post("/drf/habit/create/", data_2)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertTrue(Habit.objects.all().exists())
+
+    def test_validate_reward_and_linked_create_habit(self):
+        """ Тест на создание привычки с наградой и связанной привычкой """
+        data_1 = Habit.objects.create(
+            place="В парке",
+            time="17:00:00",
+            action="Пробежать 5 км",
+            is_pleasant=True,
+            frequency="SUNDAY",
+            award="Попить витаминный смузи",
+            duration=1,
+            is_public=True,
+            owner=self.user
+        )
+
+        data_2 = {
+            "place": "В спортзале",
+            "time": "14:00:00",
+            "action": "Пробежать 5 км",
+            "is_pleasant": False,
+            "frequency": "SUNDAY",
+            "link_pleasant": data_1.pk,
+            "award": "Попить витаминный смузи",
+            "duration": 1,
+            "is_public": True,
+            "user": self.user.pk
+        }
+
+        response = self.client.post("/drf/habit/create/", data_2)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertTrue(Habit.objects.all().exists())

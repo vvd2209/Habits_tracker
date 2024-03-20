@@ -18,14 +18,14 @@ def validator_for_habit(value):
         pass
 
     try:
-        if value['duration'] > 2:
-            raise ValidationError('Привычку можно выполнять не более 2 минут')
+        if value['duration'] > 120:
+            raise ValidationError('Привычку можно выполнять не более 120 минут')
     except KeyError:
         pass
 
     try:
         if value['link_pleasant']:
-            if not value['link_pleasant'].habit_is_good:
+            if not value['link_pleasant'].is_pleasant:
                 raise ValidationError('В связанные привычки могут попадать только приятные привычки')
     except KeyError:
         pass
